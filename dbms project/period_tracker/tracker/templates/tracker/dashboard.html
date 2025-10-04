@@ -1,0 +1,140 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4" style="color: var(--primary-pink);">🌸 Your Dashboard</h2>
+        
+        {% if user.is_authenticated %}
+            <!-- Welcome Message -->
+            <div class="alert alert-success">
+                <h4>👋 Welcome back, {{ user.username }}!</h4>
+                <p class="mb-0">Track your menstrual health and patterns with our beautiful tracker.</p>
+            </div>
+
+            {% if days_until_next %}
+            <div class="alert alert-info">
+                <h4>📅 Next Period Prediction</h4>
+                <p>Expected to start in <strong>{{ days_until_next }}</strong> days (around {{ next_period_start }})</p>
+            </div>
+            {% endif %}
+
+            <!-- Statistics Cards -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-primary mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ total_cycles }}</h5>
+                            <p class="card-text">Total Cycles</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-success mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ avg_cycle_length }} days</h5>
+                            <p class="card-text">Avg Cycle</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-warning mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ avg_period_length }} days</h5>
+                            <p class="card-text">Avg Period</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-info mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ days_until_next|default:"-" }}</h5>
+                            <p class="card-text">Days Until Next</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h3 style="color: var(--lavender);">✨ Quick Actions</h3>
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a href="{% url 'add_cycle' %}" class="btn btn-primary me-2">📝 Add Cycle</a>
+                        <a href="{% url 'add_symptom' %}" class="btn btn-secondary me-2">🤒 Log Symptoms</a>
+                        <a href="{% url 'add_mood' %}" class="btn btn-info me-2">😊 Log Mood</a>
+                        <a href="{% url 'add_daily_log' %}" class="btn btn-success me-2">📖 Daily Log</a>
+                        <a href="{% url 'calendar' %}" class="btn btn-warning me-2">📅 View Calendar</a>
+                        <a href="{% url 'statistics' %}" class="btn btn-dark me-2">📈 View Statistics</a>
+                        <a href="{% url 'settings' %}" class="btn btn-outline-dark">⚙️ Settings</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Cycles -->
+            {% if cycles %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h3 style="color: var(--lavender);">📋 Recent Cycles</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Cycle Length</th>
+                                    <th>Period Length</th>
+                                    <th>Flow</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cycle in cycles %}
+                                <tr>
+                                    <td>{{ cycle.start_date }}</td>
+                                    <td>{{ cycle.end_date }}</td>
+                                    <td>{{ cycle.cycle_length }} days</td>
+                                    <td>{{ cycle.period_length }} days</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if cycle.average_flow == 'light' %}bg-success
+                                            {% elif cycle.average_flow == 'medium' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ cycle.get_average_flow_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <h4>🎀 Get Started</h4>
+                        <p>You haven't tracked any cycles yet. <a href="{% url 'add_cycle' %}" class="alert-link">Add your first cycle</a> to start tracking your menstrual health.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Landing content for non-authenticated users -->
+            <div class="jumbotron">
+                <h1 class="display-4" style="color: var(--primary-pink);">🌸 Welcome to Period Tracker</h1>
+                <p class="lead" style="color: #666;">Track your menstrual cycles, symptoms, and moods in one beautiful, convenient place.</p>
+                <hr class="my-4">
+                <p style="color: #666;">Get insights into your cycle patterns and predictions for your next period.</p>
+                <div class="mt-4">
+                    <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">🌟 Get Started</a>
+                    <a class="btn btn-outline-primary btn-lg" href="{% url 'login' %}" role="button">🔑 Login</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

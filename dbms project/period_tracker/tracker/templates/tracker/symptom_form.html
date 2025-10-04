@@ -1,0 +1,56 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Log Symptom{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Log Symptom</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_cycle" class="form-label">Cycle</label>
+                        <select name="cycle" class="form-control" id="id_cycle" required>
+                            {% for cycle in form.cycle.field.queryset %}
+                                <option value="{{ cycle.id }}">{{ cycle.start_date }} to {{ cycle.end_date }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_date" class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control" id="id_date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_symptom_type" class="form-label">Symptom Type</label>
+                        <input type="text" name="symptom_type" class="form-control" id="id_symptom_type" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_severity" class="form-label">Severity</label>
+                        <select name="severity" class="form-control" id="id_severity" required>
+                            <option value="1">Mild</option>
+                            <option value="2">Moderate</option>
+                            <option value="3">Severe</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Description</label>
+                        <textarea name="description" class="form-control" id="id_description" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Symptom</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

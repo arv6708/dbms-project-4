@@ -1,0 +1,180 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Account Settings</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Profile Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Profile Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" 
+                                   value="{{ user.username }}" disabled>
+                            <div class="form-text">Username cannot be changed.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="{{ user.email|default:'' }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name"
+                                   value="{{ user.first_name|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name"
+                                   value="{{ user.last_name|default:'' }}">
+                        </div>
+                    </div>
+                    <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Change Password</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_old_password" class="form-label">Old Password</label>
+                        <input type="password" name="old_password" class="form-control" id="id_old_password" required>
+                        {% if password_form.old_password.errors %}
+                            <div class="text-danger">{{ password_form.old_password.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_new_password1" class="form-label">New Password</label>
+                        <input type="password" name="new_password1" class="form-control" id="id_new_password1" required>
+                        {% if password_form.new_password1.errors %}
+                            <div class="text-danger">{{ password_form.new_password1.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">
+                            <ul>
+                                <li>Your password can't be too similar to your other personal information.</li>
+                                <li>Your password must contain at least 8 characters.</li>
+                                <li>Your password can't be a commonly used password.</li>
+                                <li>Your password can't be entirely numeric.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_new_password2" class="form-label">Confirm New Password</label>
+                        <input type="password" name="new_password2" class="form-control" id="id_new_password2" required>
+                        {% if password_form.new_password2.errors %}
+                            <div class="text-danger">{{ password_form.new_password2.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" name="change_password" class="btn btn-warning">Change Password</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Your Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card text-white bg-primary mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ total_cycles }}</h5>
+                                <p class="card-text">Cycles Tracked</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-success mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ total_symptoms }}</h5>
+                                <p class="card-text">Symptoms Logged</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-info mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ total_moods }}</h5>
+                                <p class="card-text">Moods Tracked</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-warning mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ total_daily_logs }}</h5>
+                                <p class="card-text">Daily Entries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">Dashboard</a>
+                    <a href="{% url 'calendar' %}" class="btn btn-outline-success">Calendar</a>
+                    <a href="{% url 'statistics' %}" class="btn btn-outline-info">Statistics</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Management -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Account Management</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Account Created:</strong><br>
+                    {{ user.date_joined|date:"F j, Y" }}
+                </div>
+                <div class="mb-3">
+                    <strong>Last Login:</strong><br>
+                    {{ user.last_login|date:"F j, Y g:i A"|default:"Never" }}
+                </div>
+                <hr>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

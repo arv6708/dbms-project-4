@@ -1,0 +1,83 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Dashboard</h2>
+        
+        {% if days_until_next %}
+        <div class="alert alert-info">
+            <h4>Next Period Prediction</h4>
+            <p>Expected to start in <strong>{{ days_until_next }}</strong> days (around {{ next_period_start }})</p>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ total_cycles }}</h5>
+                        <p class="card-text">Total Cycles Tracked</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ avg_cycle_length }} days</h5>
+                        <p class="card-text">Average Cycle Length</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ avg_period_length }} days</h5>
+                        <p class="card-text">Average Period Length</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="d-grid gap-2">
+            <a href="{% url 'add_cycle' %}" class="btn btn-primary btn-lg">Add New Cycle</a>
+            <a href="{% url 'add_symptom' %}" class="btn btn-secondary btn-lg">Log Symptoms</a>
+            <a href="{% url 'statistics' %}" class="btn btn-info btn-lg">View Statistics</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <h3>Recent Cycles</h3>
+        {% if cycles %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Cycle Length</th>
+                        <th>Period Length</th>
+                        <th>Flow</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cycle in cycles %}
+                    <tr>
+                        <td>{{ cycle.start_date }}</td>
+                        <td>{{ cycle.end_date }}</td>
+                        <td>{{ cycle.cycle_length }} days</td>
+                        <td>{{ cycle.period_length }} days</td>
+                        <td>{{ cycle.get_average_flow_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No cycles tracked yet. <a href="{% url 'add_cycle' %}">Add your first cycle</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

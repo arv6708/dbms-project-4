@@ -1,0 +1,86 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>Statistics</h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ stats.total_cycles }}</h5>
+                        <p class="card-text">Total Cycles</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ stats.avg_cycle_length|default:0|floatformat:1 }} days</h5>
+                        <p class="card-text">Avg Cycle Length</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ stats.avg_period_length|default:0|floatformat:1 }} days</h5>
+                        <p class="card-text">Avg Period Length</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h4>Symptom Frequency</h4>
+                {% if symptoms %}
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Symptom</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for symptom in symptoms %}
+                            <tr>
+                                <td>{{ symptom.symptom_type }}</td>
+                                <td>{{ symptom.count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No symptoms logged yet.</p>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6">
+                <h4>Mood Analysis</h4>
+                {% if moods %}
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Mood</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mood in moods %}
+                            <tr>
+                                <td>{{ mood.mood_type }}</td>
+                                <td>{{ mood.count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No moods logged yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

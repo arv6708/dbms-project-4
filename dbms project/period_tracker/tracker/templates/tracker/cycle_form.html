@@ -1,0 +1,57 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Add Cycle{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Add New Cycle</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_start_date" class="form-label">Start Date</label>
+                        <input type="date" name="start_date" class="form-control" id="id_start_date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_end_date" class="form-label">End Date</label>
+                        <input type="date" name="end_date" class="form-control" id="id_end_date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_cycle_length" class="form-label">Cycle Length (days)</label>
+                        <input type="number" name="cycle_length" class="form-control" id="id_cycle_length" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_period_length" class="form-label">Period Length (days)</label>
+                        <input type="number" name="period_length" class="form-control" id="id_period_length" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_average_flow" class="form-label">Average Flow</label>
+                        <select name="average_flow" class="form-control" id="id_average_flow" required>
+                            <option value="light">Light</option>
+                            <option value="medium">Medium</option>
+                            <option value="heavy">Heavy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_notes" class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" id="id_notes" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Cycle</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Period Tracker</h1>
+    <p class="lead">Track your menstrual cycles, symptoms, and moods in one place.</p>
+    <hr class="my-4">
+    <p>Get insights into your cycle patterns and predictions for your next period.</p>
+    <div class="mt-4">
+        <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Get Started</a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+    </div>
+</div>
+{% endblock %}

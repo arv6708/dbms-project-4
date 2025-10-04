@@ -1,0 +1,43 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Period Tracker</h1>
+    <p class="lead">Track your menstrual cycles, symptoms, and moods in one place.</p>
+    <hr class="my-4">
+    <p>Get insights into your cycle patterns and predictions for your next period.</p>
+    <div class="mt-4">
+        <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Get Started</a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Cycle Tracking</h5>
+                <p class="card-text">Track your menstrual cycles and get predictions for your next period.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Symptom Logging</h5>
+                <p class="card-text">Record symptoms and understand patterns in your cycle.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Mood Tracking</h5>
+                <p class="card-text">Monitor your moods and emotional patterns throughout your cycle.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

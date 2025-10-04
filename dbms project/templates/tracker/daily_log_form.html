@@ -1,0 +1,64 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Log Daily Entry{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    {% if form.instance.pk %}Update{% else %}Add{% endif %} Daily Log
+                    {% if form.date.value %}
+                        for {{ form.date.value }}
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_date" class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control" id="id_date" 
+                               value="{{ form.date.value|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_flow_level" class="form-label">Flow Level</label>
+                        <select name="flow_level" class="form-control" id="id_flow_level" required>
+                            <option value="none" {% if form.flow_level.value == 'none' %}selected{% endif %}>No Flow</option>
+                            <option value="spotting" {% if form.flow_level.value == 'spotting' %}selected{% endif %}>Spotting</option>
+                            <option value="light" {% if form.flow_level.value == 'light' %}selected{% endif %}>Light</option>
+                            <option value="medium" {% if form.flow_level.value == 'medium' %}selected{% endif %}>Medium</option>
+                            <option value="heavy" {% if form.flow_level.value == 'heavy' %}selected{% endif %}>Heavy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_mood" class="form-label">Mood</label>
+                        <input type="text" name="mood" class="form-control" id="id_mood" 
+                               value="{{ form.mood.value|default:'' }}" 
+                               placeholder="How are you feeling today?">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_symptoms" class="form-label">Symptoms</label>
+                        <textarea name="symptoms" class="form-control" id="id_symptoms" 
+                                  rows="2" placeholder="Any symptoms today?">{{ form.symptoms.value|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_notes" class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" id="id_notes" 
+                                  rows="2" placeholder="Additional notes">{{ form.notes.value|default:'' }}</textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Entry</button>
+                    <a href="{% url 'calendar' %}" class="btn btn-secondary">Back to Calendar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

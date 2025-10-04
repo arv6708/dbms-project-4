@@ -1,0 +1,59 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Log Mood{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Log Mood</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_cycle" class="form-label">Cycle</label>
+                        <select name="cycle" class="form-control" id="id_cycle" required>
+                            {% for cycle in form.cycle.field.queryset %}
+                                <option value="{{ cycle.id }}">{{ cycle.start_date }} to {{ cycle.end_date }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_date" class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control" id="id_date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_mood_type" class="form-label">Mood Type</label>
+                        <select name="mood_type" class="form-control" id="id_mood_type" required>
+                            <option value="happy">Happy</option>
+                            <option value="sad">Sad</option>
+                            <option value="anxious">Anxious</option>
+                            <option value="energetic">Energetic</option>
+                            <option value="tired">Tired</option>
+                            <option value="irritable">Irritable</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_intensity" class="form-label">Intensity (1-10)</label>
+                        <input type="number" name="intensity" class="form-control" id="id_intensity" min="1" max="10" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_notes" class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" id="id_notes" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Mood</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

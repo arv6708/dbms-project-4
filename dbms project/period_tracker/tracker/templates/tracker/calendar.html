@@ -1,0 +1,184 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Calendar - {{ month_name }} {{ year }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Period Calendar - {{ month_name }} {{ year }}</h2>
+            <div>
+                <a href="{% url 'calendar_month' prev_year prev_month %}" class="btn btn-outline-primary me-2">
+                    &larr; Previous
+                </a>
+                <a href="{% url 'calendar' %}" class="btn btn-outline-secondary me-2">
+                    Current Month
+                </a>
+                <a href="{% url 'calendar_month' next_year next_month %}" class="btn btn-outline-primary">
+                    Next &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Flow Level Legend -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Flow Level Legend</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="flow-legend none me-2"></div>
+                            <span>No Flow</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="flow-legend spotting me-2"></div>
+                            <span>Spotting</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="flow-legend light me-2"></div>
+                            <span>Light</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="flow-legend medium me-2"></div>
+                            <span>Medium</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="flow-legend heavy me-2"></div>
+                            <span>Heavy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="card">
+            <div class="card-body">
+                <div class="calendar-grid">
+                    <!-- Weekday headers -->
+                    <div class="calendar-header">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                    </div>
+                    
+                    <!-- Calendar days -->
+                    <div class="calendar-days">
+                        {% for day in calendar_days %}
+                            <div class="calendar-day {% if day.is_today %}today{% endif %}">
+                                <div class="day-number">{{ day.day }}</div>
+                                {% if day.log %}
+                                    <div class="flow-indicator {{ day.log.flow_level }}">
+                                        {{ day.log.get_flow_level_display }}
+                                    </div>
+                                    {% if day.log.mood %}
+                                        <div class="mood-indicator">
+                                            😊 {{ day.log.mood }}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="flow-indicator none">No Entry</div>
+                                {% endif %}
+                                <a href="{% url 'add_daily_log' %}?date={{ day.date|date:'Y-m-d' }}" 
+                                   class="btn btn-sm btn-outline-primary mt-1">
+                                    Log
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.calendar-grid {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 10px;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.calendar-day-header {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 8px;
+    min-height: 120px;
+    background-color: white;
+}
+
+.calendar-day.today {
+    background-color: #e7f3ff;
+    border-color: #007bff;
+}
+
+.day-number {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.flow-indicator {
+    font-size: 0.8rem;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    text-align: center;
+}
+
+.flow-legend {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* Flow level colors */
+.none { background-color: #f8f9fa; color: #6c757d; }
+.spotting { background-color: #fff3cd; color: #856404; }
+.light { background-color: #d1ecf1; color: #0c5460; }
+.medium { background-color: #ffeaa7; color: #856404; }
+.heavy { background-color: #f8d7da; color: #721c24; }
+
+.mood-indicator {
+    font-size: 0.7rem;
+    margin-bottom: 3px;
+}
+
+@media (max-width: 768px) {
+    .calendar-day {
+        min-height: 80px;
+        padding: 4px;
+    }
+    
+    .flow-indicator {
+        font-size: 0.7rem;
+    }
+}
+</style>
+{% endblock %}

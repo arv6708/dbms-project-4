@@ -1,0 +1,217 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Data Database{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-database me-2"></i>Data Database</h2>
+        <p class="text-muted">View and manage all your tracked data in one place.</p>
+
+        <!-- Cycles Table -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-redo me-2"></i>Menstrual Cycles
+                    <span class="badge bg-light text-primary ms-2">{{ cycles.count }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if cycles %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Cycle Length</th>
+                                <th>Period Length</th>
+                                <th>Flow</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cycle in cycles %}
+                            <tr>
+                                <td>{{ cycle.start_date }}</td>
+                                <td>{{ cycle.end_date }}</td>
+                                <td>{{ cycle.cycle_length }} days</td>
+                                <td>{{ cycle.period_length }} days</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if cycle.average_flow == 'light' %}bg-success
+                                        {% elif cycle.average_flow == 'medium' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ cycle.get_average_flow_display }}
+                                    </span>
+                                </td>
+                                <td>{{ cycle.notes|truncatewords:5|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No cycles recorded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Daily Logs Table -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar-day me-2"></i>Daily Logs
+                    <span class="badge bg-light text-success ms-2">{{ daily_logs.count }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if daily_logs %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Flow Level</th>
+                                <th>Mood</th>
+                                <th>Symptoms</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in daily_logs %}
+                            <tr>
+                                <td>{{ log.date }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if log.flow_level == 'none' %}bg-secondary
+                                        {% elif log.flow_level == 'spotting' %}bg-info
+                                        {% elif log.flow_level == 'light' %}bg-success
+                                        {% elif log.flow_level == 'medium' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ log.get_flow_level_display }}
+                                    </span>
+                                </td>
+                                <td>{{ log.mood|default:"-" }}</td>
+                                <td>{{ log.symptoms|truncatewords:3|default:"-" }}</td>
+                                <td>{{ log.notes|truncatewords:3|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No daily logs recorded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Symptoms Table -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-stethoscope me-2"></i>Symptoms
+                    <span class="badge bg-light text-warning ms-2">{{ symptoms.count }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if symptoms %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Symptom Type</th>
+                                <th>Severity</th>
+                                <th>Description</th>
+                                <th>Cycle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for symptom in symptoms %}
+                            <tr>
+                                <td>{{ symptom.date }}</td>
+                                <td>{{ symptom.symptom_type }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if symptom.severity == 1 %}bg-success
+                                        {% elif symptom.severity == 2 %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ symptom.get_severity_display }}
+                                    </span>
+                                </td>
+                                <td>{{ symptom.description|truncatewords:5|default:"-" }}</td>
+                                <td>{{ symptom.cycle.start_date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No symptoms recorded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Moods Table -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-smile me-2"></i>Moods
+                    <span class="badge bg-light text-info ms-2">{{ moods.count }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if moods %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mood Type</th>
+                                <th>Intensity</th>
+                                <th>Notes</th>
+                                <th>Cycle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mood in moods %}
+                            <tr>
+                                <td>{{ mood.date }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if mood.mood_type == 'happy' %}bg-success
+                                        {% elif mood.mood_type == 'sad' %}bg-secondary
+                                        {% elif mood.mood_type == 'anxious' %}bg-warning
+                                        {% elif mood.mood_type == 'energetic' %}bg-info
+                                        {% elif mood.mood_type == 'tired' %}bg-dark
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ mood.get_mood_type_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar 
+                                            {% if mood.intensity <= 3 %}bg-success
+                                            {% elif mood.intensity <= 7 %}bg-warning
+                                            {% else %}bg-danger{% endif %}" 
+                                            style="width: {{ mood.intensity|add:'0' }}0%">
+                                            {{ mood.intensity }}/10
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ mood.notes|truncatewords:3|default:"-" }}</td>
+                                <td>{{ mood.cycle.start_date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No moods recorded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
